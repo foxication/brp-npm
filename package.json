@@ -1,0 +1,19 @@
+{
+  "name": "bevy-bridge",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "scripts": {
+    "start": "npx tsx .",
+    "test": "npx tsx --test",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node23.6 --outfile=dist/extension.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "esbuild": "0.25.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
