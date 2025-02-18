@@ -1,28 +1,36 @@
 # Bevy-Bridge
 
-## Description
-
-Bevy Remote Protocol Client
-
 ## Installation
 
 ```
 npm install bevy-bridge
 ```
 
-## API
+## Usage
 
+You have to enable feature in your game project:
+
+```toml
+[dependencies]
+bevy = { version = "0.15.1", features = ["bevy_remote"] }
 ```
-get()
-get_strict()
-list()
 
-so on...
+And run process of remote communication:
+
+```rust
+fn main() {
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .add_plugins(RemotePlugin::default())
+        .add_plugins(RemoteHttpPlugin::default())
+        .run();
+}
 ```
 
-## Example
+In client you can call remote methods, as an example:
 
-```Node
+```typescript
+import assert from 'assert';
 import { BevyRemoteProtocol, BevyVersion } from 'bevy-bridge';
 
 const protocol = new BevyRemoteProtocol(
@@ -36,59 +44,29 @@ async function spawn_entity() {
     'server::Description': 'just created node by brp.spawn()',
     'server::Position': { x: 5, y: 5, z: 7 },
   });
+
   assert.ok(response.result);
-  const entity = response.result.entity;
+  console.log('Entity is created:', response.result.entity);
 }
 ```
 
-## Development Dependencies
-
-- `@types/node` to provide TypeScript with Node.js API types
-- `esbuild` for bundle creation
-- `tsx` for running code from cli
-- `typescript` for type-check with the tsc command
-
-## Commands
-
-```powershell
-# build package for node
-npm run build
-
-# run tests
-npx tsx --test
-```
-
-## How to test
-
-Run `npx tsx --test`. It will automatically compile and run examples,
-while testing sending requests or recieving responses.
+All available methods of `BevyRemoteProtocol` you can find in [Bevy Docs: Remote](https://docs.rs/bevy/latest/bevy/remote/index.html)
 
 ## Support of old versions
 
-Bevy Bridge works on TypePaths of latest version.
+Bevy Bridge automatically translate all `TypePath` recieved from server of old version (0.15 as an example) to `TypePath` of latest version.
 
-To communicate with server on old versions, for example 0.15, Bevy Bridge
-automatically does:
+However you have to specify version of Bevy, to send correct requests.
 
-- translate TypePaths of 0.16 to 0.15 on sending request
-- translate TypePaths of 0.15 to 0.16 on recieving response
+If you don't want any translations, you can set version as `BevyVersion.ignore`.
 
 ## To Do
 
+- [x] Publish on github
+- [x] Update `README.md`
+  - [x] Usage
+  - [x] Translation
 - [ ] Rename classes/variables
-- [ ] Update `README.md`
-  - [ ] Usage
-  - [ ] Full API
-  - [ ] How it works
-    - [ ] Examples
-    - [ ] Translation
-  - [ ] Explanation of dependencies
-  - [ ] Contribution
-    - [ ] How to issue
-    - [ ] How to pull request
-    - [ ] How to format
-    - [ ] How to test
-- [ ] Publish on github
 - [ ] Publish on npm
 - [ ] Implement all tests
   - [ ] test `reparent` for v0.15 (is this possible?)
