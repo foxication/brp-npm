@@ -6,7 +6,6 @@ import {
   RpcResponse,
   EntityId,
   TypePath,
-  Value,
   BevyGetWatchResult,
   BevyGetWatchStrictResult,
   BevyListWatchResult,
@@ -156,7 +155,7 @@ export class BevyRemoteProtocol {
   public async get(
     entity: EntityId,
     components: TypePath[]
-  ): Promise<RpcResponse<{ components: Record<TypePath, Value>; errors: Record<TypePath, boolean> }>> {
+  ): Promise<RpcResponse<{ components: Record<TypePath, any>; errors: Record<TypePath, boolean> }>> {
     return this.request('bevy/get', { entity, components, strict: false });
   }
 

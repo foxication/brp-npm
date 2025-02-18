@@ -1,6 +1,5 @@
 export type EntityId = number;
 export type TypePath = string;
-export type Value = any;
 
 export type RpcResponse<R> = {
   jsonrpc: string;
