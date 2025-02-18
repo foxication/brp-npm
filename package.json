@@ -1,14 +1,17 @@
 {
   "name": "bevy-remote-protocol",
   "version": "0.0.1",
+  "description": "Bevy Remote Protocol Client",
+  "license": "MIT",
+  "repository": "foxication/brp-npm",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "author": "foxication",
-  "license": "MIT",
-  "description": "Bevy Remote Protocol Client",
   "scripts": {
     "test": "npx tsx --test",
     "build": "tsup src/index.ts --dts"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",
