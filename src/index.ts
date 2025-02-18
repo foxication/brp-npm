@@ -1,2 +1,2 @@
-export * from './bevy-bridge';
+export * from './protocol';
 export * from './types';

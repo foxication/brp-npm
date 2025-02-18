@@ -1,14 +1,14 @@
 // Test of basic usage of library
 import test from 'node:test';
 import assert from 'assert';
-import { BevyGetWatchResult, BevyGetWatchStrictResult, BevyListWatchResult, BevyVersion } from '../src/types';
+import { BrpGetWatchResult, BrpGetWatchStrictResult, BrpListWatchResult, ServerVersion } from '../src/types';
 import { ChildProcessWithoutNullStreams, spawn, spawnSync } from 'child_process';
-import { BevyRemoteProtocol } from '../src/bevy-bridge';
+import { BevyRemoteProtocol } from '../src/protocol';
 
-test_with_server('server/manifest/v0.15/Cargo.toml', BevyVersion.V0_15);
-test_with_server('server/manifest/main/Cargo.toml', BevyVersion.V0_16);
+test_with_server('server/manifest/v0.15/Cargo.toml', ServerVersion.V0_15);
+test_with_server('server/manifest/main/Cargo.toml', ServerVersion.V0_16);
 
-export function test_with_server(manifestPath: string, version: BevyVersion) {
+export function test_with_server(manifestPath: string, version: ServerVersion) {
   test(`testing ${manifestPath}`, async (t) => {
     var isCompiled = false;
     await t.test('server compilation', async (t) => {
@@ -30,8 +30,8 @@ export function test_with_server(manifestPath: string, version: BevyVersion) {
     });
 
     const protocol = new BevyRemoteProtocol(BevyRemoteProtocol.DEFAULT_URL, version);
-    const isV0_15 = protocol.serverVersion === BevyVersion.V0_15;
-    const isV0_16 = protocol.serverVersion === BevyVersion.V0_16;
+    const isV0_15 = protocol.serverVersion === ServerVersion.V0_15;
+    const isV0_16 = protocol.serverVersion === ServerVersion.V0_16;
 
     var isConnected = false;
     await t.test('connection with server', { skip: !isRunning, timeout: 30 * 1000 }, async (t) => {
@@ -105,7 +105,7 @@ export async function test_get(protocol: BevyRemoteProtocol): Promise<void> {
   assert.ok(type_paths);
 
   // get
-  if (protocol.serverVersion === BevyVersion.V0_15) {
+  if (protocol.serverVersion === ServerVersion.V0_15) {
     const res = await protocol.get(
       entity,
       type_paths.filter((value) => {
@@ -115,7 +115,7 @@ export async function test_get(protocol: BevyRemoteProtocol): Promise<void> {
     assert.ifError(res.error);
     assert.deepEqual(res.result, reference_v0_15);
   }
-  if (protocol.serverVersion === BevyVersion.V0_16) {
+  if (protocol.serverVersion === ServerVersion.V0_16) {
     const res = await protocol.get(entity, type_paths);
     assert.ifError(res.error);
     assert.ok(res.result);
@@ -125,7 +125,7 @@ export async function test_get(protocol: BevyRemoteProtocol): Promise<void> {
   }
 
   // get (strict)
-  if (protocol.serverVersion === BevyVersion.V0_15) {
+  if (protocol.serverVersion === ServerVersion.V0_15) {
     const res = await protocol.get_strict(
       entity,
       type_paths.filter((value) => {
@@ -135,7 +135,7 @@ export async function test_get(protocol: BevyRemoteProtocol): Promise<void> {
     assert.ifError(res.error);
     assert.deepEqual(res.result, reference_v0_15.components);
   }
-  if (protocol.serverVersion === BevyVersion.V0_16) {
+  if (protocol.serverVersion === ServerVersion.V0_16) {
     const res = await protocol.get_strict(entity, type_paths);
     assert.ifError(res.error);
     assert.ok(res.result);
@@ -182,7 +182,7 @@ export async function test_list_entity(protocol: BevyRemoteProtocol): Promise<vo
 export async function test_list_all(protocol: BevyRemoteProtocol): Promise<void> {
   const response = await protocol.list();
   assert.ifError(response.error);
-  if (protocol.serverVersion === BevyVersion.V0_15)
+  if (protocol.serverVersion === ServerVersion.V0_15)
     assert.deepEqual(response.result?.sort(), [
       'bevy_ecs::name::Name',
       'server::Description',
@@ -192,7 +192,7 @@ export async function test_list_all(protocol: BevyRemoteProtocol): Promise<void>
       'server::Position',
       'server::Shape',
     ]);
-  if (protocol.serverVersion === BevyVersion.V0_16)
+  if (protocol.serverVersion === ServerVersion.V0_16)
     assert.deepEqual(response.result?.sort(), [
       'bevy_ecs::hierarchy::ChildOf',
       'bevy_ecs::hierarchy::Children',
@@ -299,10 +299,10 @@ export async function test_get_watch(protocol: BevyRemoteProtocol): Promise<void
   const entity = (await protocol.query({ filterWith: ['server::Description'] })).result?.[0].entity;
   assert.ok(entity);
 
-  var changed: BevyGetWatchResult | undefined;
+  var changed: BrpGetWatchResult | undefined;
   const apply = { 'server::Description': 'here is updated description' };
   const controller = new AbortController();
-  const observer = (arg: BevyGetWatchResult) => {
+  const observer = (arg: BrpGetWatchResult) => {
     changed = arg;
     controller.abort();
   };
@@ -324,7 +324,7 @@ export async function test_get_watch_strict(protocol: BevyRemoteProtocol): Promi
 
   const apply = { 'server::Description': 'here is updated description' };
   const controller = new AbortController();
-  const observer = (changed: BevyGetWatchStrictResult) => {
+  const observer = (changed: BrpGetWatchStrictResult) => {
     assert.deepEqual(changed, { components: apply, removed: [] });
     controller.abort();
   };
@@ -340,7 +340,7 @@ export async function test_list_watch(protocol: BevyRemoteProtocol): Promise<voi
 
   const to_insert = { 'server::Description': 'added new component (Description)' };
   const controller = new AbortController();
-  const observer = (changed: BevyListWatchResult) => {
+  const observer = (changed: BrpListWatchResult) => {
     assert.deepEqual(changed, { components: to_insert, removed: [] });
     controller.abort();
   };
@@ -358,7 +358,7 @@ export async function test_list_watch_all(protocol: BevyRemoteProtocol): Promise
   assert.ok(entity);
 
   const controller = new AbortController();
-  const observer = (changed: BevyListWatchResult) => {
+  const observer = (changed: BrpListWatchResult) => {
     assert.deepEqual(changed, undefined); // TODO: response
   };
 

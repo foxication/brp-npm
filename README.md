@@ -1,9 +1,9 @@
-# Bevy-Bridge
+# Bevy-Remote-Protocol
 
 ## Installation
 
 ```
-npm install bevy-bridge
+npm install bevy-remote-protocol
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ In client you can call remote methods, as an example:
 
 ```typescript
 import assert from 'assert';
-import { BevyRemoteProtocol, BevyVersion } from 'bevy-bridge';
+import { BevyRemoteProtocol, BevyVersion } from 'bevy-remote-protocol';
 
 const protocol = new BevyRemoteProtocol(
   BevyRemoteProtocol.DEFAULT_URL,
@@ -54,7 +54,7 @@ All available methods of `BevyRemoteProtocol` you can find in [Bevy Docs: Remote
 
 ## Support of old versions
 
-Bevy Bridge automatically translate all `TypePath` recieved from server of old version (0.15 as an example) to `TypePath` of latest version.
+Bevy-Remote-Protocol automatically translate all `TypePath` recieved from server of old version (0.15 as an example) to `TypePath` of latest version.
 
 However you have to specify version of Bevy, to send correct requests.
 

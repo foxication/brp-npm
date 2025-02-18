@@ -3,24 +3,22 @@
 
 import { URL } from 'url';
 import {
-  RpcResponse,
+  BrpResponse,
   EntityId,
   TypePath,
-  BevyGetWatchResult,
-  BevyGetWatchStrictResult,
-  BevyListWatchResult,
-  BevyVersion,
+  BrpGetWatchResult,
+  BrpGetWatchStrictResult,
+  BrpListWatchResult,
+  ServerVersion,
 } from './types';
 import { TextDecoder } from 'util';
 
 function reverseMap(map: Record<string, string>): Record<string, string> {
   const result: Record<string, string> = {};
-
   for (const key in map) {
     const value = map[key];
     result[value] = key;
   }
-
   return result;
 }
 
@@ -46,9 +44,9 @@ export class BevyRemoteProtocol {
   private static decoder = new TextDecoder();
   private id: number;
   public url: URL;
-  public serverVersion: BevyVersion;
+  public serverVersion: ServerVersion;
 
-  constructor(url: URL, version: BevyVersion) {
+  constructor(url: URL, version: ServerVersion) {
     this.id = 0;
     this.url = url;
     this.serverVersion = version;
@@ -60,7 +58,7 @@ export class BevyRemoteProtocol {
 
   private translateToInternal(message: string): string {
     const table = (() => {
-      if (this.serverVersion === BevyVersion.IGNORE) return {};
+      if (this.serverVersion === ServerVersion.IGNORE) return {};
       return BevyRemoteProtocol.ANY_TO_INTERNAL;
     })();
 
@@ -73,9 +71,9 @@ export class BevyRemoteProtocol {
   private translateToSpecificVersion(message: string): string {
     const table = (() => {
       switch (this.serverVersion) {
-        case BevyVersion.V0_15:
+        case ServerVersion.V0_15:
           return BevyRemoteProtocol.INTERNAL_TO_V0_15;
-        case BevyVersion.V0_16:
+        case ServerVersion.V0_16:
           return BevyRemoteProtocol.INTERNAL_TO_V0_16;
         default:
           return {}; // ignore
@@ -107,7 +105,7 @@ export class BevyRemoteProtocol {
     };
   }
 
-  private async request<R>(method: string, params: any): Promise<RpcResponse<R>> {
+  private async request<R>(method: string, params: any): Promise<BrpResponse<R>> {
     // throws error if connection refused by url
     return await JSON.parse(
       this.translateToInternal(await (await fetch(this.url, this.requestWrapper(method, params))).text())
@@ -155,7 +153,7 @@ export class BevyRemoteProtocol {
   public async get(
     entity: EntityId,
     components: TypePath[]
-  ): Promise<RpcResponse<{ components: Record<TypePath, any>; errors: Record<TypePath, boolean> }>> {
+  ): Promise<BrpResponse<{ components: Record<TypePath, any>; errors: Record<TypePath, boolean> }>> {
     return this.request('bevy/get', { entity, components, strict: false });
   }
 
@@ -172,7 +170,7 @@ export class BevyRemoteProtocol {
    *
    * `result`: A map associating each type name to its value on the requested entity.
    */
-  public async get_strict(entity: EntityId, components: TypePath[]): Promise<RpcResponse<Record<TypePath, any>>> {
+  public async get_strict(entity: EntityId, components: TypePath[]): Promise<BrpResponse<Record<TypePath, any>>> {
     return this.request('bevy/get', { entity, components, strict: true });
   }
 
@@ -212,7 +210,7 @@ export class BevyRemoteProtocol {
     has?: TypePath[];
     filterWith?: TypePath[];
     filterWithout?: TypePath[];
-  }): Promise<RpcResponse<[{ entity: EntityId; components: Record<TypePath, any>; has: Record<TypePath, boolean> }]>> {
+  }): Promise<BrpResponse<[{ entity: EntityId; components: Record<TypePath, any>; has: Record<TypePath, boolean> }]>> {
     return this.request('bevy/query', {
       data: { components, option, has },
       filter: { with: filterWith, without: filterWithout },
@@ -228,7 +226,7 @@ export class BevyRemoteProtocol {
    * `result`:
    * - `entity`: The ID of the newly spawned entity.
    */
-  public async spawn(components: Record<TypePath, any>): Promise<RpcResponse<{ entity: EntityId }>> {
+  public async spawn(components: Record<TypePath, any>): Promise<BrpResponse<{ entity: EntityId }>> {
     return this.request('bevy/spawn', { components });
   }
 
@@ -240,7 +238,7 @@ export class BevyRemoteProtocol {
    *
    * `result`: null.
    */
-  public async destroy(entity: EntityId): Promise<RpcResponse<null>> {
+  public async destroy(entity: EntityId): Promise<BrpResponse<null>> {
     return this.request('bevy/destroy', { entity });
   }
 
@@ -253,7 +251,7 @@ export class BevyRemoteProtocol {
    *
    * `result`: null.
    */
-  public async remove(entity: EntityId, components: TypePath[]): Promise<RpcResponse<null>> {
+  public async remove(entity: EntityId, components: TypePath[]): Promise<BrpResponse<null>> {
     return this.request('bevy/remove', { entity, components });
   }
 
@@ -266,7 +264,7 @@ export class BevyRemoteProtocol {
    *
    * `result`: null.
    */
-  public async insert(entity: EntityId, components: Record<TypePath, any>): Promise<RpcResponse<null>> {
+  public async insert(entity: EntityId, components: Record<TypePath, any>): Promise<BrpResponse<null>> {
     return this.request('bevy/insert', { entity, components });
   }
 
@@ -280,7 +278,7 @@ export class BevyRemoteProtocol {
    *
    * `result`: null.
    */
-  public async reparent(entities: EntityId[], parent?: EntityId): Promise<RpcResponse<null>> {
+  public async reparent(entities: EntityId[], parent?: EntityId): Promise<BrpResponse<null>> {
     return this.request('bevy/reparent', { entities, parent });
   }
 
@@ -295,7 +293,7 @@ export class BevyRemoteProtocol {
    *
    * `result`: An array of fully-qualified type names of components.
    */
-  public async list(entity?: EntityId): Promise<RpcResponse<TypePath[]>> {
+  public async list(entity?: EntityId): Promise<BrpResponse<TypePath[]>> {
     if (entity) return this.request('bevy/list', { entity });
     return this.request('bevy/list', null);
   }
@@ -323,7 +321,7 @@ export class BevyRemoteProtocol {
     entity: EntityId,
     components: TypePath[],
     signal: AbortSignal,
-    observer: (arg: BevyGetWatchResult) => void
+    observer: (arg: BrpGetWatchResult) => void
   ): Promise<null> {
     return this.requestStream('bevy/get+watch', { entity, components, strict: false }, signal, observer);
   }
@@ -350,7 +348,7 @@ export class BevyRemoteProtocol {
     entity: EntityId,
     components: TypePath[],
     signal: AbortSignal,
-    observer: (arg: BevyGetWatchStrictResult) => void
+    observer: (arg: BrpGetWatchStrictResult) => void
   ): Promise<null> {
     return this.requestStream('bevy/get+watch', { entity, components, strict: true }, signal, observer);
   }
@@ -374,7 +372,7 @@ export class BevyRemoteProtocol {
    */
   public async list_watch(
     signal: AbortSignal,
-    observer: (arg: BevyListWatchResult) => void,
+    observer: (arg: BrpListWatchResult) => void,
     entity?: EntityId
   ): Promise<null> {
     if (entity) return this.requestStream('bevy/list+watch', { entity }, signal, observer);
