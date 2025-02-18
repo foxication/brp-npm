@@ -4,6 +4,10 @@
   "description": "Bevy Remote Protocol Client",
   "license": "MIT",
   "repository": "foxication/brp-npm",
+  "keywords": [
+    "bevy",
+    "remote"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
