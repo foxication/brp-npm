@@ -1,25 +1,5 @@
+// Bevy Remote Protocol Client
 // https://docs.rs/bevy/latest/bevy/remote/index.html
-//
-// Client Library for requesting bevy default methods
-//
-// Example of request and response
-//
-// const http_rpc: Object = {
-//   method: 'POST',
-//   path: '/',
-//   host: '127.0.0.1',
-//   port: '15702',
-//   'Content-Type': 'application/json',
-//   Accept: 'application/json',
-//   body: {
-//     method: 'bevy/get',
-//     id: 0,
-//     params: {
-//       entity: 4294967298,
-//       components: ['bevy_transform::components::transform::Transform'],
-//     },
-//   },
-// };
 
 import { URL } from 'url';
 import {
@@ -86,7 +66,7 @@ export class BevyRemoteProtocol {
     })();
 
     for (const search in table) {
-      message = message.replaceAll(search, table[search]);
+      message = message.replace(new RegExp(search, 'g'), table[search]);
     }
     return message;
   }
@@ -104,7 +84,7 @@ export class BevyRemoteProtocol {
     })();
 
     for (const search in table) {
-      message = message.replaceAll(search, table[search]);
+      message = message.replace(new RegExp(search, 'g'), table[search]);
     }
     return message;
   }

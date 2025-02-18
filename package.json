@@ -1,18 +1,18 @@
 {
   "name": "bevy-bridge",
   "version": "0.0.1",
-  "main": "src/index.ts",
-  "author": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "foxication",
   "license": "MIT",
-  "description": "",
+  "description": "Bevy Remote Protocol Client",
   "scripts": {
-    "start": "npx tsx .",
     "test": "npx tsx --test",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node23.6 --outfile=dist/extension.js"
+    "build": "tsup src/index.ts --dts"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",
-    "esbuild": "0.25.0",
+    "tsup": "^8.3.6",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
