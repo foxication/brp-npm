@@ -170,7 +170,7 @@ export async function test_list_entity(protocol: BevyRemoteProtocol): Promise<vo
   assert.ok(entity);
 
   var response = await protocol.list(entity);
-  assert.deepEqual(response.result?.toSorted(), [
+  assert.deepEqual(response.result?.sort(), [
     'bevy_ecs::hierarchy::Children',
     'bevy_ecs::name::Name',
     'server::FavoriteEntity',
@@ -183,7 +183,7 @@ export async function test_list_all(protocol: BevyRemoteProtocol): Promise<void>
   const response = await protocol.list();
   assert.ifError(response.error);
   if (protocol.serverVersion === BevyVersion.V0_15)
-    assert.deepEqual(response.result?.toSorted(), [
+    assert.deepEqual(response.result?.sort(), [
       'bevy_ecs::name::Name',
       'server::Description',
       'server::ExistenceTime',
@@ -193,7 +193,7 @@ export async function test_list_all(protocol: BevyRemoteProtocol): Promise<void>
       'server::Shape',
     ]);
   if (protocol.serverVersion === BevyVersion.V0_16)
-    assert.deepEqual(response.result?.toSorted(), [
+    assert.deepEqual(response.result?.sort(), [
       'bevy_ecs::hierarchy::ChildOf',
       'bevy_ecs::hierarchy::Children',
       'bevy_ecs::name::Name',
@@ -211,7 +211,7 @@ export async function test_insert_then_remove(protocol: BevyRemoteProtocol): Pro
   assert.ok(entity);
 
   var res_types = await protocol.list(entity);
-  assert.deepEqual(res_types.result?.toSorted(), [
+  assert.deepEqual(res_types.result?.sort(), [
     'bevy_ecs::hierarchy::Children',
     'bevy_ecs::name::Name',
     'server::FavoriteEntity',
@@ -224,7 +224,7 @@ export async function test_insert_then_remove(protocol: BevyRemoteProtocol): Pro
   assert.ifError(res_null.error);
 
   res_types = await protocol.list(entity);
-  assert.deepEqual(res_types.result?.toSorted(), [
+  assert.deepEqual(res_types.result?.sort(), [
     'bevy_ecs::hierarchy::Children',
     'bevy_ecs::name::Name',
     'server::Description',
@@ -238,7 +238,7 @@ export async function test_insert_then_remove(protocol: BevyRemoteProtocol): Pro
   assert.ifError(res_null.error);
 
   res_types = await protocol.list(entity);
-  assert.deepEqual(res_types.result?.toSorted(), [
+  assert.deepEqual(res_types.result?.sort(), [
     'bevy_ecs::hierarchy::Children',
     'bevy_ecs::name::Name',
     'server::FavoriteEntity',
