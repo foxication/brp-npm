@@ -33,10 +33,7 @@ In client you can call remote methods, as an example:
 import assert from 'assert';
 import { BevyRemoteProtocol, BevyVersion } from 'bevy-remote-protocol';
 
-const protocol = new BevyRemoteProtocol(
-  BevyRemoteProtocol.DEFAULT_URL,
-  BevyVersion.V0_16
-);
+const protocol = new BevyRemoteProtocol(BevyRemoteProtocol.DEFAULT_URL, BevyVersion.V0_16);
 
 async function spawn_entity() {
   const response = await protocol.spawn({
