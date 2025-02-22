@@ -12,6 +12,7 @@ import {
   ServerVersion,
 } from './types';
 import { TextDecoder } from 'util';
+import { BrpError } from '../dist';
 
 function reverseMap(map: Record<string, string>): Record<string, string> {
   const result: Record<string, string> = {};
@@ -153,7 +154,7 @@ export class BevyRemoteProtocol {
   public async get(
     entity: EntityId,
     components: TypePath[]
-  ): Promise<BrpResponse<{ components: Record<TypePath, any>; errors: Record<TypePath, boolean> }>> {
+  ): Promise<BrpResponse<{ components: Record<TypePath, any>; errors: Record<TypePath, BrpError> }>> {
     return this.request('bevy/get', { entity, components, strict: false });
   }
 
