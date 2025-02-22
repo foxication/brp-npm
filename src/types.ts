@@ -11,17 +11,20 @@ export type BrpResponse<R> = {
 export type BrpError = {
   code: number;
   message: string;
-  data?: any;
+  data?: BrpValue;
 };
 
+/** Keep in mind that `object` can be `null`. */
+export type BrpValue = string | number | boolean | object | string[] | boolean[] | number[];
+
 export type BrpGetWatchResult = {
-  components: Record<TypePath, any>;
+  components: Record<TypePath, BrpValue>;
   removed: TypePath[];
   errors: Record<TypePath, BrpError>;
 };
 
 export type BrpGetWatchStrictResult = {
-  components: Record<TypePath, any>;
+  components: Record<TypePath, BrpValue>;
   removed: TypePath[];
 };
 
