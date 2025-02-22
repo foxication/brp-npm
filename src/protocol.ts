@@ -12,7 +12,6 @@ import {
   ServerVersion,
 } from './types';
 import { TextDecoder } from 'util';
-import { BrpError } from '../dist';
 
 function reverseMap(map: Record<string, string>): Record<string, string> {
   const result: Record<string, string> = {};
