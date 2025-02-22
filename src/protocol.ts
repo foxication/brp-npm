@@ -10,6 +10,7 @@ import {
   BrpGetWatchStrictResult,
   BrpListWatchResult,
   ServerVersion,
+  BrpError,
   BrpValue,
 } from './types';
 import { TextDecoder } from 'util';
