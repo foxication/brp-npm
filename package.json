@@ -1,6 +1,6 @@
 {
   "name": "bevy-remote-protocol",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Bevy Remote Protocol Client",
   "license": "MIT",
   "repository": "foxication/brp-npm",
