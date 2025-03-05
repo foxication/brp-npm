@@ -59,6 +59,6 @@ If you don't want any translations, you can set version as `BevyVersion.ignore`.
 
 ## To Do
 
-- [ ] Implement all tests
-  - [ ] test `reparent` for v0.15 (is this possible?)
-  - [ ] test `list+watch (all)`
+- [ ] Instead of translation of `type paths` for specific versions, provide maps of `common type paths` for every version
+- [ ] test `reparent` for v0.15 (is this possible?)
+- [ ] test `list+watch (all)`
