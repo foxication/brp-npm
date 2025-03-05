@@ -8,8 +8,9 @@ import { short } from '../src';
 import { BrpValue } from '../dist';
 
 test('short TypePath', () => {
-  const exampleTypePath = short('bevy_ecs::something::Crypto<hell::Satan>');
-  assert.equal(exampleTypePath, short(exampleTypePath));
+  assert.strictEqual(short('Crypto'), 'Crypto');
+  assert.strictEqual(short('bevy_ecs::something::Crypto'), 'Crypto');
+  assert.strictEqual(short('bevy_ecs::something::Crypto<hell::Satan>'), 'Crypto');
 });
 test_with_server('server/manifest/v0.15/Cargo.toml', ServerVersion.V0_15);
 test_with_server('server/manifest/main/Cargo.toml', ServerVersion.V0_16);
