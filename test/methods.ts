@@ -287,7 +287,8 @@ export async function test_reparent(protocol: BevyRemoteProtocol): Promise<void>
   });
   assert.ok(response.result);
 
-  const children: number[] = response.result[0].components['bevy_ecs::hierarchy::Children'];
+  const children: BrpValue = response.result[0].components['bevy_ecs::hierarchy::Children'];
+  assert.ok(Array.isArray(children) && children.every((item) => typeof item === 'number'));
   assert.ok(children.includes(child0));
   assert.ok(children.includes(child1));
 
