@@ -4,7 +4,13 @@ import assert from 'assert';
 import { BrpGetWatchResult, BrpGetWatchStrictResult, BrpListWatchResult, ServerVersion } from '../src/types';
 import { ChildProcessWithoutNullStreams, spawn, spawnSync } from 'child_process';
 import { BevyRemoteProtocol } from '../src/protocol';
+import { short } from '../src';
+import { BrpValue } from '../dist';
 
+test('short TypePath', () => {
+  const exampleTypePath = short('bevy_ecs::something::Crypto<hell::Satan>');
+  assert.equal(exampleTypePath, short(exampleTypePath));
+});
 test_with_server('server/manifest/v0.15/Cargo.toml', ServerVersion.V0_15);
 test_with_server('server/manifest/main/Cargo.toml', ServerVersion.V0_16);
 
