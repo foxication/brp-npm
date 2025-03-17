@@ -1,7 +1,7 @@
 // Test of basic usage of library
 import test from 'node:test';
 import assert from 'assert';
-import { BrpGetWatchResult, BrpGetWatchStrictResult, BrpListWatchResult, ServerVersion } from '../src/types';
+import { BrpGetWatchResult, BrpGetWatchStrictResult, BrpListWatchResult, BrpValue, ServerVersion } from '../src/types';
 import { ChildProcessWithoutNullStreams, spawn, spawnSync } from 'child_process';
 import { BevyRemoteProtocol } from '../src/protocol';
 import { short } from '../src';

@@ -1,4 +1,4 @@
-import { TypePath } from '../dist';
+import { TypePath } from './types';
 
 export * from './protocol';
 export * from './types';
