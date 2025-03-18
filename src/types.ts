@@ -29,6 +29,10 @@ export class BrpValueWrapped {
     return BrpValueWrapped.getBrpValue(this.tree, path);
   }
   set(path: (TypePath | number)[] = [], value: BrpValue) {
+    if (path.length === 0) {
+      this.tree = value;
+      return;
+    }
     BrpValueWrapped.setBrpValue(this.tree, path, value);
   }
 

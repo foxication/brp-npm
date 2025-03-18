@@ -37,4 +37,12 @@ test('BrpValueWrapped methods', () => {
 
   data2.set(['middle'], ['f', 'u', 'n']);
   assert.deepStrictEqual(data2.get(), { first: 'Hello,', middle: ['f', 'u', 'n'], last: 'world!' });
+
+  const data3 = new BrpValueWrapped(null);
+  data3.set([], { description: 'replaced' });
+  assert.deepStrictEqual(data3.get(), { description: 'replaced' });
+
+  const data4 = new BrpValueWrapped(null);
+  data4.set(undefined, { info: 'replaced' });
+  assert.deepStrictEqual(data4.get(), { info: 'replaced' });
 });
