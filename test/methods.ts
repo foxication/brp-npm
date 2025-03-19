@@ -49,7 +49,20 @@ test('BrpValueWrapped methods', () => {
   // don't change input data
   const data5 = new BrpValueWrapped({ hello: 'some', cruel: 'things', world: 'hide' });
   const path = ['hello'];
+  data5.has(path);
   data5.get(path);
   data5.set(path, 'all');
   assert.deepStrictEqual(path, ['hello']);
+
+  // has
+  const data6 = new BrpValueWrapped({
+    hello: { hello: 'glad to see' },
+    world: { first: 'everything', second: 'universe' },
+  });
+  assert.ok(data6.has(['hello']));
+  assert.ok(data6.has(['world']));
+  assert.ok(data6.has(['world', 'second']));
+
+  assert.strictEqual(data6.has(['some']), false);
+  assert.strictEqual(data6.has(['world', 'third']), false);
 });

@@ -25,6 +25,9 @@ export class BrpValueWrapped {
     this.tree = tree;
   }
 
+  has(path: (TypePath | number)[] = []): boolean {
+    return BrpValueWrapped.hasBrpValue(this.tree, path);
+  }
   get(path: (TypePath | number)[] = []): BrpValue | undefined {
     return BrpValueWrapped.getBrpValue(this.tree, path);
   }
@@ -34,6 +37,23 @@ export class BrpValueWrapped {
       return;
     }
     BrpValueWrapped.setBrpValue(this.tree, path, value);
+  }
+
+  private static hasBrpValue(value?: BrpValue, path: (TypePath | number)[] = []): boolean {
+    if (value === undefined) return false;
+    if (path.length === 0) return true;
+    if (typeof value !== 'object' || value === null) return false;
+
+    // Array
+    const key = path[0]; // length >= 1
+    if (value instanceof Array) {
+      if (typeof key !== 'number') return false;
+      return this.hasBrpValue(value[key], path.slice(1));
+    }
+
+    // Object
+    if (typeof key !== 'string') return false;
+    return this.hasBrpValue(value[key], path.slice(1));
   }
 
   private static getBrpValue(value?: BrpValue, path: (TypePath | number)[] = []): BrpValue | undefined {
