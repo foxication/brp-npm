@@ -65,4 +65,12 @@ test('BrpValueWrapped methods', () => {
 
   assert.strictEqual(data6.has(['some']), false);
   assert.strictEqual(data6.has(['world', 'third']), false);
+
+  // keys
+  assert.deepStrictEqual(data2.keys(), ['first', 'middle', 'last']);
+  assert.deepStrictEqual(data2.keys(['middle']), [0, 1, 2]);
+
+  // values
+  assert.deepStrictEqual(data2.values(), ['Hello,', ['f', 'u', 'n'], 'world!']);
+  assert.deepStrictEqual(data2.values(['middle']), ['f', 'u', 'n']);
 });

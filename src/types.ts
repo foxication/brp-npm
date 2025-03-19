@@ -39,6 +39,21 @@ export class BrpStructure {
     }
     BrpStructure.setBrpValue(this.tree, path, value);
   }
+  keys(path: BrpStructurePath = []): TypePath[] | number[] {
+    const iterable = this.get(path);
+    if (typeof iterable !== 'object') return [];
+    if (iterable === undefined || iterable === null) return [];
+
+    if (iterable instanceof Array) return [...iterable.keys()];
+    return Object.keys(iterable);
+  }
+  values(path: BrpStructurePath = []): BrpValue[] {
+    const iterable = this.get(path);
+    if (typeof iterable !== 'object') return [];
+    if (iterable === undefined || iterable === null) return [];
+
+    return Object.values(iterable);
+  }
 
   private static hasBrpValue(value?: BrpValue, path: BrpStructurePath = []): boolean {
     if (value === undefined) return false;
