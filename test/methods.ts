@@ -1,6 +1,6 @@
 import assert from 'assert';
 import test from 'node:test';
-import { short, BrpValueWrapped } from '../src';
+import { short, BrpStructure } from '../src';
 
 test('short TypePath', () => {
   assert.strictEqual(short('Crypto'), 'Crypto');
@@ -9,45 +9,45 @@ test('short TypePath', () => {
 });
 test('BrpValueWrapped methods', () => {
   // basic
-  assert.strictEqual(new BrpValueWrapped(1).get(), 1);
-  assert.strictEqual(new BrpValueWrapped('hello').get(), 'hello');
-  assert.strictEqual(new BrpValueWrapped(true).get(), true);
-  assert.strictEqual(new BrpValueWrapped(null).get(), null);
+  assert.strictEqual(new BrpStructure(1).get(), 1);
+  assert.strictEqual(new BrpStructure('hello').get(), 'hello');
+  assert.strictEqual(new BrpStructure(true).get(), true);
+  assert.strictEqual(new BrpStructure(null).get(), null);
 
   // objects
-  const data0 = new BrpValueWrapped({ word1: 'hello', word2: 'world' });
+  const data0 = new BrpStructure({ word1: 'hello', word2: 'world' });
   assert.deepStrictEqual(data0.get(), { word1: 'hello', word2: 'world' });
   assert.strictEqual(data0.get(['word1']), 'hello');
   assert.strictEqual(data0.get(['word2']), 'world');
 
   // arrays
-  const data1 = new BrpValueWrapped(['hello', 'world']);
+  const data1 = new BrpStructure(['hello', 'world']);
   assert.deepStrictEqual(data1.get(), ['hello', 'world']);
   assert.strictEqual(data1.get([0]), 'hello');
   assert.strictEqual(data1.get([1]), 'world');
 
   // hybrid
-  assert.strictEqual(new BrpValueWrapped({ person: [0, 1, 2, 3, 4, 5] }).get(['person', 1]), 1);
-  assert.strictEqual(new BrpValueWrapped([0, 1, { person: 'Vladimir' }, 3, 4, 5]).get([2, 'person']), 'Vladimir');
+  assert.strictEqual(new BrpStructure({ person: [0, 1, 2, 3, 4, 5] }).get(['person', 1]), 1);
+  assert.strictEqual(new BrpStructure([0, 1, { person: 'Vladimir' }, 3, 4, 5]).get([2, 'person']), 'Vladimir');
 
   // mutation
-  const data2 = new BrpValueWrapped({ first: 'Hello,', middle: 'cruel', last: 'world!' });
+  const data2 = new BrpStructure({ first: 'Hello,', middle: 'cruel', last: 'world!' });
   data2.set(['middle'], 'fantasy');
   assert.deepStrictEqual(data2.get(), { first: 'Hello,', middle: 'fantasy', last: 'world!' });
 
   data2.set(['middle'], ['f', 'u', 'n']);
   assert.deepStrictEqual(data2.get(), { first: 'Hello,', middle: ['f', 'u', 'n'], last: 'world!' });
 
-  const data3 = new BrpValueWrapped(null);
+  const data3 = new BrpStructure(null);
   data3.set([], { description: 'replaced' });
   assert.deepStrictEqual(data3.get(), { description: 'replaced' });
 
-  const data4 = new BrpValueWrapped(null);
+  const data4 = new BrpStructure(null);
   data4.set(undefined, { info: 'replaced' });
   assert.deepStrictEqual(data4.get(), { info: 'replaced' });
 
   // don't change input data
-  const data5 = new BrpValueWrapped({ hello: 'some', cruel: 'things', world: 'hide' });
+  const data5 = new BrpStructure({ hello: 'some', cruel: 'things', world: 'hide' });
   const path = ['hello'];
   data5.has(path);
   data5.get(path);
@@ -55,7 +55,7 @@ test('BrpValueWrapped methods', () => {
   assert.deepStrictEqual(path, ['hello']);
 
   // has
-  const data6 = new BrpValueWrapped({
+  const data6 = new BrpStructure({
     hello: { hello: 'glad to see' },
     world: { first: 'everything', second: 'universe' },
   });

@@ -17,28 +17,30 @@ export type BrpErrors = { [key: TypePath]: BrpError };
 
 export type BrpValue = string | number | boolean | null | BrpValue[] | BrpObject;
 export type BrpObject = { [key: TypePath]: BrpValue };
-export class BrpValueWrapped {
+
+export type BrpStructurePath = (TypePath | number)[];
+export class BrpStructure {
   private tree: BrpValue;
 
   constructor(tree: BrpValue) {
     this.tree = tree;
   }
 
-  has(path: (TypePath | number)[] = []): boolean {
-    return BrpValueWrapped.hasBrpValue(this.tree, path);
+  has(path: BrpStructurePath = []): boolean {
+    return BrpStructure.hasBrpValue(this.tree, path);
   }
-  get(path: (TypePath | number)[] = []): BrpValue | undefined {
-    return BrpValueWrapped.getBrpValue(this.tree, path);
+  get(path: BrpStructurePath = []): BrpValue | undefined {
+    return BrpStructure.getBrpValue(this.tree, path);
   }
-  set(path: (TypePath | number)[] = [], value: BrpValue) {
+  set(path: BrpStructurePath = [], value: BrpValue) {
     if (path.length === 0) {
       this.tree = value;
       return;
     }
-    BrpValueWrapped.setBrpValue(this.tree, path, value);
+    BrpStructure.setBrpValue(this.tree, path, value);
   }
 
-  private static hasBrpValue(value?: BrpValue, path: (TypePath | number)[] = []): boolean {
+  private static hasBrpValue(value?: BrpValue, path: BrpStructurePath = []): boolean {
     if (value === undefined) return false;
     if (path.length === 0) return true;
     if (typeof value !== 'object' || value === null) return false;
@@ -55,7 +57,7 @@ export class BrpValueWrapped {
     return this.hasBrpValue(value[key], path.slice(1));
   }
 
-  private static getBrpValue(value?: BrpValue, path: (TypePath | number)[] = []): BrpValue | undefined {
+  private static getBrpValue(value?: BrpValue, path: BrpStructurePath = []): BrpValue | undefined {
     if (value === undefined) return undefined;
     if (path.length === 0) return value;
     if (typeof value !== 'object' || value === null) return undefined;
@@ -64,15 +66,15 @@ export class BrpValueWrapped {
     const key = path[0];
     if (value instanceof Array) {
       if (typeof key !== 'number') return null;
-      return BrpValueWrapped.getBrpValue(value[key], path.slice(1));
+      return BrpStructure.getBrpValue(value[key], path.slice(1));
     }
 
     // Object
     if (typeof key !== 'string') return null;
-    return BrpValueWrapped.getBrpValue(value[key], path.slice(1));
+    return BrpStructure.getBrpValue(value[key], path.slice(1));
   }
 
-  private static setBrpValue(value: BrpValue, path: (TypePath | number)[] = [], setter: BrpValue): void {
+  private static setBrpValue(value: BrpValue, path: BrpStructurePath = [], setter: BrpValue): void {
     if (path.length === 0) return;
     if (typeof value !== 'object' || value === null) return;
 
@@ -84,7 +86,7 @@ export class BrpValueWrapped {
         value[key] = setter;
         return;
       }
-      BrpValueWrapped.setBrpValue(value[key], path.slice(1), setter);
+      BrpStructure.setBrpValue(value[key], path.slice(1), setter);
       return;
     }
 
@@ -94,7 +96,7 @@ export class BrpValueWrapped {
       value[key] = setter;
       return;
     }
-    BrpValueWrapped.setBrpValue(value[key], path.slice(1), setter);
+    BrpStructure.setBrpValue(value[key], path.slice(1), setter);
   }
 }
 
