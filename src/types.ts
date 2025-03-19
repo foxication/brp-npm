@@ -25,62 +25,57 @@ export class BrpValueWrapped {
     this.tree = tree;
   }
 
-  get(path: (TypePath | number)[] = []): BrpValue {
-    return BrpValueWrapped.getBrpValue(this.tree, path.slice());
+  get(path: (TypePath | number)[] = []): BrpValue | undefined {
+    return BrpValueWrapped.getBrpValue(this.tree, path);
   }
   set(path: (TypePath | number)[] = [], value: BrpValue) {
     if (path.length === 0) {
       this.tree = value;
       return;
     }
-    BrpValueWrapped.setBrpValue(this.tree, path.slice(), value);
+    BrpValueWrapped.setBrpValue(this.tree, path, value);
   }
 
-  private static getBrpValue(value: BrpValue, path: (TypePath | number)[] = []): BrpValue {
+  private static getBrpValue(value?: BrpValue, path: (TypePath | number)[] = []): BrpValue | undefined {
+    if (value === undefined) return undefined;
     if (path.length === 0) return value;
-    if (typeof value === 'string') return null;
-    if (typeof value === 'boolean') return null;
-    if (typeof value === 'number') return null;
-    if (value === null) return null;
+    if (typeof value !== 'object' || value === null) return undefined;
 
     // Array
-    const key = path.shift() ?? 0;
+    const key = path[0];
     if (value instanceof Array) {
       if (typeof key !== 'number') return null;
-      return BrpValueWrapped.getBrpValue(value[key], path);
+      return BrpValueWrapped.getBrpValue(value[key], path.slice(1));
     }
 
     // Object
     if (typeof key !== 'string') return null;
-    return BrpValueWrapped.getBrpValue(value[key], path);
+    return BrpValueWrapped.getBrpValue(value[key], path.slice(1));
   }
 
   private static setBrpValue(value: BrpValue, path: (TypePath | number)[] = [], setter: BrpValue): void {
     if (path.length === 0) return;
-    if (typeof value === 'string') return;
-    if (typeof value === 'boolean') return;
-    if (typeof value === 'number') return;
-    if (value === null) return;
+    if (typeof value !== 'object' || value === null) return;
 
     // Array
-    const key = path.shift() ?? 0;
+    const key = path[0];
     if (value instanceof Array) {
       if (typeof key !== 'number') return;
-      if (path.length === 0) {
+      if (path.length === 1) {
         value[key] = setter;
         return;
       }
-      BrpValueWrapped.setBrpValue(value[key], path, setter);
+      BrpValueWrapped.setBrpValue(value[key], path.slice(1), setter);
       return;
     }
 
     // Object
     if (typeof key !== 'string') return;
-    if (path.length === 0) {
+    if (path.length === 1) {
       value[key] = setter;
       return;
     }
-    BrpValueWrapped.setBrpValue(value[key], path, setter);
+    BrpValueWrapped.setBrpValue(value[key], path.slice(1), setter);
   }
 }
 
