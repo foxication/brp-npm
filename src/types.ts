@@ -26,14 +26,14 @@ export class BrpValueWrapped {
   }
 
   get(path: (TypePath | number)[] = []): BrpValue {
-    return BrpValueWrapped.getBrpValue(this.tree, path);
+    return BrpValueWrapped.getBrpValue(this.tree, path.slice());
   }
   set(path: (TypePath | number)[] = [], value: BrpValue) {
     if (path.length === 0) {
       this.tree = value;
       return;
     }
-    BrpValueWrapped.setBrpValue(this.tree, path, value);
+    BrpValueWrapped.setBrpValue(this.tree, path.slice(), value);
   }
 
   private static getBrpValue(value: BrpValue, path: (TypePath | number)[] = []): BrpValue {

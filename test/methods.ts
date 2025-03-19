@@ -45,4 +45,11 @@ test('BrpValueWrapped methods', () => {
   const data4 = new BrpValueWrapped(null);
   data4.set(undefined, { info: 'replaced' });
   assert.deepStrictEqual(data4.get(), { info: 'replaced' });
+
+  // don't change input data
+  const data5 = new BrpValueWrapped({ hello: 'some', cruel: 'things', world: 'hide' });
+  const path = ['hello'];
+  data5.get(path);
+  data5.set(path, 'all');
+  assert.deepStrictEqual(path, ['hello']);
 });
