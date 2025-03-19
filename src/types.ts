@@ -15,8 +15,7 @@ export type BrpError = {
 };
 export type BrpErrors = { [key: TypePath]: BrpError };
 
-export type BrpValue = string | number | boolean | null | BrpArray | BrpObject;
-export type BrpArray = BrpValue[];
+export type BrpValue = string | number | boolean | null | BrpValue[] | BrpObject;
 export type BrpObject = { [key: TypePath]: BrpValue };
 export class BrpValueWrapped {
   private tree: BrpValue;
